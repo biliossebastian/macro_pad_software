@@ -1,0 +1,27 @@
+[project]
+name = "macropad-companion"
+version = "0.1.0"
+description = "Companion app for an RP2040/QMK macro pad. Listens over Raw HID and runs actions."
+requires-python = ">=3.9"
+dependencies = [
+    "PySide6>=6.9",
+    "hidapi>=0.14",
+    "pynput>=1.7",
+    "pycaw>=20240210",  # per-app audio control (Windows Core Audio / WASAPI)
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "pyinstaller>=6",
+]
+
+[project.gui-scripts]
+macropad = "macropad.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["macropad*"]
