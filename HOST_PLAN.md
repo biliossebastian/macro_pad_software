@@ -40,7 +40,7 @@ the UI grid (`row, col = divmod(i, 3)`), so id 0 is top-left.
 | Button | Action | Notes |
 |---|---|---|
 | 0 |Ctrl C||
-| 1 |Ctrl | |
+| 1 |Ctrl V| |
 | 2 | | |
 | 3 | | |
 | 4 | | |

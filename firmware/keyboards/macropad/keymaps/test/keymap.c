@@ -1,14 +1,15 @@
 // Bring-up test keymap.
 //   keys      a b c / d e f / g h i
 //   enc push  j k l          (needs R24 fitted)
-//   enc turn  any encoder steps the LED hue down/up (ccw/cw)
-//   LED1..9   SK6812 mini chain on GP24, light blue; red while any key is held
+//   enc turn  any encoder steps LED brightness down/up (ccw/cw)
+//   LED1..9   SK6812 mini chain on GP24, full-saturation rainbow cycle; red while any key is held
 // Hold the top-left key while plugging in to enter the bootloader (bootmagic),
 // or double-tap the reset button.
 #include QMK_KEYBOARD_H
 
 #define STATUS_LED_PIN GP25
-#define HUE_STEP 8 // 256 / 8 = 32 detents per full colour wheel
+// Fastest rainbow_mood speed: one hue step per 30 ms, ~7.7 s per full cycle.
+#define RAINBOW_MODE (RGBLIGHT_MODE_RAINBOW_MOOD + 2)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
@@ -19,15 +20,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-// Resting colour. Starts at HSV_AZURE (light blue); the encoders move the hue.
-static uint8_t base_hue = 132;
-static uint8_t held     = 0;
+static uint8_t held = 0;
 
 static void show_colour(void) {
     if (held > 0) {
-        rgblight_sethsv_noeeprom(HSV_RED);
-    } else {
-        rgblight_sethsv_noeeprom(base_hue, 102, 120);
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+        rgblight_sethsv_noeeprom(0, 255, rgblight_get_val()); // red, at the current brightness
+    } else if (rgblight_get_mode() != RAINBOW_MODE) {
+        rgblight_sethsv_noeeprom(rgblight_get_hue(), 255, rgblight_get_val());
+        rgblight_mode_noeeprom(RAINBOW_MODE);
     }
 }
 
@@ -43,8 +44,8 @@ void keyboard_pre_init_user(void) {
 // EEPROM; _noeeprom so this test never writes RGB state to flash.
 void keyboard_post_init_user(void) {
     rgblight_enable_noeeprom();
-    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-    show_colour();
+    rgblight_sethsv_noeeprom(0, 255, RGBLIGHT_LIMIT_VAL);
+    rgblight_mode_noeeprom(RAINBOW_MODE);
 }
 
 // Heartbeat on the status LED so "firmware is running" is visible without a host.
@@ -57,17 +58,20 @@ void housekeeping_task_user(void) {
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    base_hue += clockwise ? HUE_STEP : -HUE_STEP; // uint8_t wraps around the colour wheel
-    uprintf("enc %u %s hue %u\n", index, clockwise ? "cw" : "ccw", base_hue);
-    show_colour();
+    if (clockwise) {
+        rgblight_increase_val_noeeprom();
+    } else {
+        rgblight_decrease_val_noeeprom();
+    }
+    uprintf("enc %u %s val %u\n", index, clockwise ? "cw" : "ccw", rgblight_get_val());
     return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uprintf("row %u col %u %s\n", record->event.key.row, record->event.key.col, record->event.pressed ? "down" : "up");
 
-    // Red while any key is held, back to the resting colour once all are
-    // released. Counting rather than toggling keeps multi-key presses sane.
+    // Red while any key is held, back to the rainbow once all are released.
+    // Counting rather than toggling keeps multi-key presses sane.
     if (record->event.pressed) {
         held++;
     } else if (held > 0) {

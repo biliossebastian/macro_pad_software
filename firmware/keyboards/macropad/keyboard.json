@@ -24,10 +24,13 @@
     "rgblight": {
         "led_count": 9,
         "max_brightness": 120,
+        "animations": {
+            "rainbow_mood": true
+        },
         "default": {
-            "animation": "static_light",
-            "hue": 132,
-            "sat": 102,
+            "animation": "rainbow_mood",
+            "hue": 0,
+            "sat": 255,
             "val": 120
         }
     },
