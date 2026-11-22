@@ -25,10 +25,10 @@
         "led_count": 9,
         "max_brightness": 120,
         "animations": {
-            "rainbow_mood": true
+            "rainbow_swirl": true
         },
         "default": {
-            "animation": "rainbow_mood",
+            "animation": "rainbow_swirl",
             "hue": 0,
             "sat": 255,
             "val": 120

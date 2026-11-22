@@ -1,15 +1,16 @@
 // Bring-up test keymap.
 //   keys      a b c / d e f / g h i
 //   enc push  j k l          (needs R24 fitted)
-//   enc turn  any encoder steps LED brightness down/up (ccw/cw)
-//   LED1..9   SK6812 mini chain on GP24, full-saturation rainbow cycle; red while any key is held
+//   enc turn  encoder 0 steps system volume, encoders 1-2 step LED brightness (ccw down / cw up)
+//   LED1..9   SK6812 mini chain on GP24, full-saturation rainbow wave; red while any key is held
 // Hold the top-left key while plugging in to enter the bootloader (bootmagic),
 // or double-tap the reset button.
 #include QMK_KEYBOARD_H
 
 #define STATUS_LED_PIN GP25
-// Fastest rainbow_mood speed: one hue step per 30 ms, ~7.7 s per full cycle.
-#define RAINBOW_MODE (RGBLIGHT_MODE_RAINBOW_MOOD + 2)
+// rainbow_swirl spreads the full hue wheel along the chain (LED1..LED9) and
+// rotates it. +4 is the fastest speed: one hue step per 20 ms, ~5 s per lap.
+#define RAINBOW_MODE (RGBLIGHT_MODE_RAINBOW_SWIRL + 4)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
@@ -58,7 +59,9 @@ void housekeeping_task_user(void) {
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (clockwise) {
+    if (index == 0) {
+        tap_code(clockwise ? KC_VOLU : KC_VOLD);
+    } else if (clockwise) {
         rgblight_increase_val_noeeprom();
     } else {
         rgblight_decrease_val_noeeprom();

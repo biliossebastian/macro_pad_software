@@ -13,21 +13,8 @@ one passes. Most bring-up pain comes from debugging two unknowns at once.
 
 ## Fill this in first (from the schematic)
 
-Everything below is parameterized on these. Get them from the KiCad netlist, not
-from memory.
-
-| Signal | GPIO | Notes |
-|---|---|---|
-| Matrix row 0 | `GP__` | |
-| Matrix row 1 | `GP__` | |
-| Matrix row 2 | `GP__` | |
-| Matrix col 0 | `GP__` | |
-| Matrix col 1 | `GP__` | |
-| Matrix col 2 | `GP__` | |
-| Encoder 0 A / B | `GP__` / `GP__` | |
-| Encoder 1 A / B | `GP__` / `GP__` | |
-| Encoder 2 A / B | `GP__` / `GP__` | |
-| Encoder push switches | ? | see below |
+Everything below is parameterized on the pinout. It is captured from the Altium
+netlist in [HARDWARE.md](../HARDWARE.md). Use that, not memory.
 
 **Diode direction:** anode at switch, cathode at row = `COL2ROW`. The opposite is
 `ROW2COL`. Read it off the schematic symbol; guessing costs an hour in stage 2.

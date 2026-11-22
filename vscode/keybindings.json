@@ -1,0 +1,37 @@
+// Macro pad bindings for the "default" QMK keymap. Copy into
+// %APPDATA%\Code\User\keybindings.json (Ctrl+Shift+P > "Open Keyboard Shortcuts (JSON)").
+// Later entries win when several match, so each fallback sits above its specific binding.
+[
+    // F13: new Claude tab
+    { "key": "f13", "command": "claude-vscode.editor.open" },
+
+    // Encoder 1: step through Claude tabs. Keep the Claude tabs in their own editor
+    // group, since next/previous cycles whatever group the active Claude tab is in.
+    // If a Claude tab isn't active, the first turn jumps to the last-used one.
+    { "key": "f14", "command": "claude-vscode.editor.openLast" },
+    { "key": "f15", "command": "claude-vscode.editor.openLast" },
+    { "key": "f14", "command": "workbench.action.previousEditorInGroup", "when": "activeWebviewPanelId == 'claudeVSCodePanel'" },
+    { "key": "f15", "command": "workbench.action.nextEditorInGroup", "when": "activeWebviewPanelId == 'claudeVSCodePanel'" },
+    // Encoder 1 push: focus the Claude input
+    { "key": "f16", "command": "claude-vscode.focus" },
+
+    // Encoder 2: step through files in Source Control (diffs) or Explorer, opening
+    // each as a preview (italic tab) while focus stays in the list.
+    // If neither list has focus, the first turn focuses Source Control instead.
+    { "key": "f17", "command": "workbench.scm.action.focusNextResourceGroup" },
+    { "key": "f18", "command": "workbench.scm.action.focusNextResourceGroup" },
+    {
+        "key": "f17",
+        "command": "runCommands",
+        "args": { "commands": ["list.focusUp", "list.selectAndPreserveFocus"] },
+        "when": "listFocus && (focusedView == 'workbench.scm' || focusedView == 'workbench.explorer.fileView')"
+    },
+    {
+        "key": "f18",
+        "command": "runCommands",
+        "args": { "commands": ["list.focusDown", "list.selectAndPreserveFocus"] },
+        "when": "listFocus && (focusedView == 'workbench.scm' || focusedView == 'workbench.explorer.fileView')"
+    },
+    // Encoder 2 push: keep the previewed file open (italic tab becomes a normal tab)
+    { "key": "f19", "command": "workbench.action.keepEditor" }
+]
