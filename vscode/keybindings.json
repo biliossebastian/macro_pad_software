@@ -1,6 +1,8 @@
 // Macro pad bindings for the "default" QMK keymap. Copy into
 // %APPDATA%\Code\User\keybindings.json (Ctrl+Shift+P > "Open Keyboard Shortcuts (JSON)").
 // Later entries win when several match, so each fallback sits above its specific binding.
+// F20 (focus/cycle VS Code windows) is not here: it has to work while VS Code is unfocused,
+// so it's handled by the host helper macropad/vscode_cycler.py.
 [
     // F13: new Claude tab
     { "key": "f13", "command": "claude-vscode.editor.open" },
