@@ -84,7 +84,7 @@ for both ends" is actually true:
 
 ```
 qmk setup
-qmk config user.overlay_dir="C:/Users/SBILIOS/Projects/macro_pad_software/firmware"
+qmk config user.overlay_dir="<path-to-repo>/firmware"
 qmk new-keyboard          # name: macropad, MCU: RP2040
 ```
 
